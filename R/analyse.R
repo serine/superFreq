@@ -216,7 +216,7 @@ superFreq = function(metaDataFile, captureRegions, normalDirectory, Rdirectory, 
   analyse(inputFiles=inputFiles, outputDirectories=outputDirectories, settings=settings, forceRedo=forceRedo,
           runtimeSettings=runtimeSettings, parameters=parameters, byIndividual=T, manualStoryMerge=manualStoryMerge,
           correctReferenceBias=correctReferenceBias, vepCall=vepCall, cosmicDirectory=cosmicDirectory, mode=mode,
-          filterOffTarget=filterOffTarget, rareGermline=rareGermline)
+          filterOffTarget=filterOffTarget, rareGermline=rareGermline, fastaRef=reference)
 
 }
 
@@ -295,7 +295,7 @@ splitMetaData = function(metaDataFile, Rdirectory, plotDirectory) {
 #' }
 analyse = function(inputFiles, outputDirectories, settings, forceRedo, runtimeSettings,
   parameters=defaultSuperParameters(), byIndividual=T, manualStoryMerge=F, correctReferenceBias=T,
-  vepCall='vep', cosmicDirectory=cosmicDirectory, mode='exome', filterOffTarget=T, rareGermline=T) {
+  vepCall='vep', cosmicDirectory=cosmicDirectory, mode='exome', filterOffTarget=T, rareGermline=T, fastaRef=fastaRef) {
   options(stringsAsFactors = F)
   options(scipen = 10)
   
@@ -609,7 +609,7 @@ analyse = function(inputFiles, outputDirectories, settings, forceRedo, runtimeSe
   }
   else {
     outputSomaticVariants(variants, genome=genome, plotDirectory=plotDirectory, cpus=cpus, forceRedo=forceRedoOutputSomatic, onlyForVEP=T, rareGermline=rareGermline)
-    variants = runVEP(variants, plotDirectory, cpus=cpus, genome=genome, vepCall=vepCall, forceRedoVEP=forceRedoVEP)
+    variants = runVEP(variants, plotDirectory, cpus=cpus, genome=genome, vepCall=vepCall, forceRedoVEP=forceRedoVEP, fastaRef=fastaRef)
     variants = getMoreVEPinfo(variants, plotDirectory, genome=genome, cosmicDirectory=cosmicDirectory)
     allVariants$variants = variants
     save(allVariants, file=saveFile)

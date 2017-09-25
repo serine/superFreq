@@ -8,7 +8,7 @@
 #' @param forceRedoVEP Logical: if VEP should be rerun even if saved data already exists.
 #'
 #' @details This function calls VEP on the output from outputSomaticVariants. For this, VEP needs to be callable by system('vep').
-runVEP = function(variants, plotDir, cpus=1, genome='hg19', vepCall='vep', forceRedoVEP=F) {
+runVEP = function(variants, plotDir, cpus=1, genome='hg19', vepCall='vep', forceRedoVEP=F, fastaRef=fastaRef) {
   catLog('VEP-ing..')
   dir = paste0(plotDir, '/somatics/')
   for ( name in names(variants$variants) ) {
@@ -41,17 +41,17 @@ runVEP = function(variants, plotDir, cpus=1, genome='hg19', vepCall='vep', force
       if ( vepVersion < 76 ) {
         catLog('Using pre-76 VEP version call. Not supported, but trying...\n')
         if ( cpus == 1 )
-          call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --cache --everything --force_overwrite')
+          call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --fasta ', fastaRef, ' --cache --offline --verbose --everything --force_overwrite')
         else
-          call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --cache --everything --force_overwrite --fork ', cpus)        
+          call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --fasta ', fastaRef, ' --cache --offline --verbose --everything --force_overwrite --fork ', cpus)
       }
       else {
         if ( cpus == 1 )
-          call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --cache --everything --force_overwrite --assembly ', assembly)
+          call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --fasta ', fastaRef,' --cache --offline --verbose --everything --force_overwrite --assembly ', assembly)
         else
-          call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --cache --everything --force_overwrite --assembly ', assembly, ' --fork ', cpus)
+          call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --fasta ', fastaRef,' --cache --offline --verbose --everything --force_overwrite --assembly ', assembly, ' --fork ', cpus)
       }
-      if ( genome == 'mm10' ) call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --cache --everything --force_overwrite --fork ', cpus, ' --species mus_musculus')
+      if ( genome == 'mm10' ) call = paste0(vepCall, ' -i ', basename(infile), ' -o ', basename(VEPfile), ' --fasta ', fastaRef,' --cache --offline --verbose --everything --force_overwrite --fork ', cpus, ' --species mus_musculus')
       catLog(call, '\n')
       call = paste0(call, '\n')
       systemRet = system(call, intern=T)
